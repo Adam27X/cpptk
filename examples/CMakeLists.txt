@@ -42,3 +42,20 @@ endif()
 target_link_libraries(example2 cpptk)
 
 install(TARGETS example2 DESTINATION bin)
+
+project(cosmic)
+
+add_executable(cosmic cosmic.cpp)
+
+if(WIN32)
+	target_include_directories(cosmic PUBLIC C:/Program Files/Tcl86)
+	target_compile_options(cosmic PUBLIC -std=c++17)
+else()
+	target_include_directories(cosmic PUBLIC /usr/include/tcl8.6) #TODO: Package this directly
+	target_include_directories(cosmic PUBLIC /usr/include/) #For tk, which should also be packaged directly
+	target_compile_options(cosmic PUBLIC -std=c++17 -Wno-parentheses -Wall -Wno-long-long -pedantic)
+endif()
+
+target_link_libraries(cosmic cpptk)
+
+install(TARGETS cosmic DESTINATION bin)
