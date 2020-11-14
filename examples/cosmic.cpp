@@ -189,7 +189,7 @@ int main(int, char *argv[])
 	Tk::grid(Tk::rowconfigure, ".c", 1) -Tk::weight(1);*/
 
 	//Listbox
-	class country_info
+	/*class country_info
 	{
 		public:
 		country_info(const std::string &c, const std::string &n, const unsigned p) : code(c), name(n), population(p) {}
@@ -235,7 +235,7 @@ int main(int, char *argv[])
 	std::string sentmsg("");
 	std::string statusmsg("");
 
-	auto show_population = [&] () 
+	auto show_population = [&] ()
 	{
 		std::string idx(".c.countries" << Tk::curselection());
 		unsigned index = std::stoi(idx);
@@ -245,7 +245,7 @@ int main(int, char *argv[])
 		statusmsg = tmp.str();
 	};
 
-	auto send_gift = [&] () 
+	auto send_gift = [&] ()
 	{
 		std::string idx(".c.countries" << Tk::curselection());
 		unsigned index = std::stoi(idx);
@@ -296,7 +296,24 @@ int main(int, char *argv[])
 		".c.countries" << Tk::itemconfigure(i) -Tk::background(Tk::rgb(0xf0,0xf0,0xff)); //-Tk::background("#f0f0ff") also works
 	}
 
-	".c.countries" << Tk::selection(Tk::set,0);
+	".c.countries" << Tk::selection(Tk::set,0);*/
+
+	//Scrollbar example
+	Tk::listbox(".l") -Tk::yscrollcommand(".s set") -Tk::height(5);
+	Tk::grid(Tk::configure,".l") -Tk::column(0) -Tk::row(0) -Tk::sticky("news");
+	Tk::scrollbar(".s") -Tk::command(".l yview") -Tk::orient(Tk::vertical);
+	Tk::grid(Tk::configure, ".s") -Tk::column(1) -Tk::row(0) -Tk::sticky("ns");
+	Tk::label(".stat") -Tk::text("Status message here") -Tk::anchor(Tk::w);
+	Tk::grid(Tk::configure, ".stat") -Tk::column(0) -Tk::columnspan(2) -Tk::row(1) -Tk::sticky("we");
+	Tk::grid(Tk::columnconfigure, ".", 0) -Tk::weight(1);
+	Tk::grid(Tk::rowconfigure, ".", 0) -Tk::weight(1);
+
+	for(unsigned i=0; i<100; i++)
+	{
+		std::stringstream item;
+		item << "Line " << i << " of 100";
+		".l" << Tk::insert(Tk::end,item.str());
+	}
 
      	Tk::runEventLoop();
 }
