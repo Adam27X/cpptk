@@ -166,15 +166,24 @@ int main(int, char *argv[])
 	Tk::button(".c.ok") -Tk::text("Okay");
 	Tk::button(".c.cancel") -Tk::text("Cancel");
 
-	Tk::grid(Tk::configure, ".c") -Tk::column(0) -Tk::row(0);
-	Tk::grid(Tk::configure, ".c.f") -Tk::column(0) -Tk::row(0) -Tk::columnspan(3) -Tk::rowspan(2);
-	Tk::grid(Tk::configure, ".c.namelbl") -Tk::column(3) -Tk::row(0) -Tk::columnspan(2);
-	Tk::grid(Tk::configure, ".c.name") -Tk::column(3) -Tk::row(1) -Tk::columnspan(2);
+	Tk::grid(Tk::configure, ".c") -Tk::column(0) -Tk::row(0) -Tk::sticky("nsew");
+	Tk::grid(Tk::configure, ".c.f") -Tk::column(0) -Tk::row(0) -Tk::columnspan(3) -Tk::rowspan(2) -Tk::sticky("nsew");
+	Tk::grid(Tk::configure, ".c.namelbl") -Tk::column(3) -Tk::row(0) -Tk::columnspan(2) -Tk::sticky("nw") -Tk::padx(5);
+	Tk::grid(Tk::configure, ".c.name") -Tk::column(3) -Tk::row(1) -Tk::columnspan(2) -Tk::sticky("new") -Tk::pady(5) -Tk::padx(5);
 	Tk::grid(Tk::configure, ".c.one") -Tk::column(0) -Tk::row(3);
 	Tk::grid(Tk::configure, ".c.two") -Tk::column(1) -Tk::row(3);
 	Tk::grid(Tk::configure, ".c.three") -Tk::column(2) -Tk::row(3);
 	Tk::grid(Tk::configure, ".c.ok") -Tk::column(3) -Tk::row(3);
 	Tk::grid(Tk::configure, ".c.cancel") -Tk::column(4) -Tk::row(3);
+
+	Tk::grid(Tk::columnconfigure, ".", 0) -Tk::weight(1);
+	Tk::grid(Tk::rowconfigure, ".", 0) -Tk::weight(1);
+	Tk::grid(Tk::columnconfigure, ".c", 0) -Tk::weight(3);
+	Tk::grid(Tk::columnconfigure, ".c", 1) -Tk::weight(3);
+	Tk::grid(Tk::columnconfigure, ".c", 2) -Tk::weight(3);
+	Tk::grid(Tk::columnconfigure, ".c", 3) -Tk::weight(1);
+	Tk::grid(Tk::columnconfigure, ".c", 4) -Tk::weight(1);
+	Tk::grid(Tk::rowconfigure, ".c", 1) -Tk::weight(1);
 
      	Tk::runEventLoop();
 }
