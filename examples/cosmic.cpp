@@ -1,6 +1,9 @@
 #include "cpptk.h"
 #include <stdio.h>
 #include <iostream>
+#include <vector>
+#include <map>
+#include <sstream>
 
 int main(int, char *argv[])
 {
@@ -153,7 +156,7 @@ int main(int, char *argv[])
 	Tk::grid(Tk::configure, ".f.msg") -Tk::column(1) -Tk::row(2) -Tk::padx(5) -Tk::pady(5) -Tk::sticky("w");*/
 
 	//Grid spanning multiple cells
-	int one = 1;
+	/*int one = 1;
 	int two = 0;
 	int three = 1;
 	Tk::frame(".c");
@@ -183,7 +186,117 @@ int main(int, char *argv[])
 	Tk::grid(Tk::columnconfigure, ".c", 2) -Tk::weight(3);
 	Tk::grid(Tk::columnconfigure, ".c", 3) -Tk::weight(1);
 	Tk::grid(Tk::columnconfigure, ".c", 4) -Tk::weight(1);
-	Tk::grid(Tk::rowconfigure, ".c", 1) -Tk::weight(1);
+	Tk::grid(Tk::rowconfigure, ".c", 1) -Tk::weight(1);*/
+
+	//Listbox
+	class country_info
+	{
+		public:
+		country_info(const std::string &c, const std::string &n, const unsigned p) : code(c), name(n), population(p) {}
+		std::string code;
+		std::string name;
+		unsigned population;
+	};
+
+	std::vector<country_info> countries;
+	countries.push_back(country_info("ar","Argentina",41000000));
+	countries.push_back(country_info("au","Australia",21179211));
+	countries.push_back(country_info("be","Belgium",10584534));
+	countries.push_back(country_info("br","Brazil",185971537));
+	countries.push_back(country_info("ca","Canada",33148682));
+	countries.push_back(country_info("cn","China",1323128240));
+	countries.push_back(country_info("dk","Denmark",5457415));
+	countries.push_back(country_info("fi","Finland",5302000));
+	countries.push_back(country_info("fr","France",64102140));
+	countries.push_back(country_info("gr","Greece",11147000));
+	countries.push_back(country_info("in","India",1131043000));
+	countries.push_back(country_info("it","Italy",59206382));
+	countries.push_back(country_info("jp","Japan",127718000));
+	countries.push_back(country_info("mx","Mexico",106535000));
+	countries.push_back(country_info("nl","Netherlands",16402414));
+	countries.push_back(country_info("no","Norway",4738085));
+	countries.push_back(country_info("es","Spain",45116894));
+	countries.push_back(country_info("se","Sweden",9174082));
+	countries.push_back(country_info("ch","Switzerland",7508700));
+
+	enum class gifts
+	{
+		card,
+		flowers,
+		nastygram
+	};
+
+	std::map<gifts,std::string> gift_to_name;
+	gift_to_name.insert(std::make_pair(gifts::card,"Greeting card"));
+	gift_to_name.insert(std::make_pair(gifts::flowers,"Flowers"));
+	gift_to_name.insert(std::make_pair(gifts::nastygram,"Nastygram"));
+
+	int gift = static_cast<int>(gifts::card);
+	std::string sentmsg("");
+	std::string statusmsg("");
+
+	auto show_population = [&] () 
+	{
+		std::string idx(".c.countries" << Tk::curselection());
+		unsigned index = std::stoi(idx);
+		const country_info &country = countries[index];
+		std::stringstream tmp;
+		tmp << "The population of " << country.name << " (" << country.code << ") is " << country.population;
+		statusmsg = tmp.str();
+	};
+
+	auto send_gift = [&] () 
+	{
+		std::string idx(".c.countries" << Tk::curselection());
+		unsigned index = std::stoi(idx);
+		".c.countries" << Tk::see(index); //If the selected item is out of view, make it visiable
+		const country_info &country = countries[index];
+		std::stringstream tmp;
+		tmp << "Sent " << gift_to_name[static_cast<gifts>(gift)] << " to leader of " << country.name;
+		sentmsg = tmp.str();
+
+	};
+
+	Tk::frame(".c") -Tk::padx(5) -Tk::pady(12); //FIXME: We want padding(5,5,12,0) here
+	Tk::grid(Tk::configure, ".c") -Tk::column(0) -Tk::row(0) -Tk::sticky("nwes");
+	Tk::grid(Tk::columnconfigure, ".", 0) -Tk::weight(1);
+	Tk::grid(Tk::rowconfigure, ".", 0) -Tk::weight(1);
+
+	Tk::listbox(".c.countries");
+	for(auto i=countries.begin(),e=countries.end();i!=e;++i)
+	{
+		".c.countries" << Tk::insert(Tk::end,i->name);
+	}
+	Tk::label(".c.lbl") -Tk::text("Send to country's leader:");
+	Tk::radiobutton(".c.g1") -Tk::text(gift_to_name[gifts::card]) -Tk::variable(gift) -Tk::value(static_cast<int>(gifts::card));
+	Tk::radiobutton(".c.g2") -Tk::text(gift_to_name[gifts::flowers]) -Tk::variable(gift) -Tk::value(static_cast<int>(gifts::flowers));
+	Tk::radiobutton(".c.g3") -Tk::text(gift_to_name[gifts::nastygram]) -Tk::variable(gift) -Tk::value(static_cast<int>(gifts::nastygram));
+	Tk::button(".c.send") -Tk::text("Send Gift") -Tk::command(send_gift) -Tk::defaultstate(Tk::active);
+	Tk::label(".c.sentlbl") -Tk::textvariable(sentmsg) -Tk::anchor(Tk::center);
+	Tk::label(".c.status") -Tk::textvariable(statusmsg) -Tk::anchor(Tk::w);
+
+	Tk::grid(Tk::configure,".c.countries") -Tk::column(0) -Tk::row(0) -Tk::rowspan(6) -Tk::sticky("nsew");
+	Tk::grid(Tk::configure,".c.lbl") -Tk::column(1) -Tk::row(0) -Tk::padx(10) -Tk::pady(5);
+	Tk::grid(Tk::configure,".c.g1") -Tk::column(1) -Tk::row(1) -Tk::sticky("w") -Tk::padx(20);
+	Tk::grid(Tk::configure,".c.g2") -Tk::column(1) -Tk::row(2) -Tk::sticky("w") -Tk::padx(20);
+	Tk::grid(Tk::configure,".c.g3") -Tk::column(1) -Tk::row(3) -Tk::sticky("w") -Tk::padx(20);
+	Tk::grid(Tk::configure,".c.send") -Tk::column(2) -Tk::row(4) -Tk::sticky("e");
+	Tk::grid(Tk::configure,".c.sentlbl") -Tk::column(1) -Tk::row(5) -Tk::columnspan(2) -Tk::sticky("n") -Tk::pady(5) -Tk::padx(5);
+	Tk::grid(Tk::configure,".c.status") -Tk::column(0) -Tk::row(6) -Tk::columnspan(2) -Tk::sticky("we");
+	Tk::grid(Tk::columnconfigure, ".c", 0) -Tk::weight(1);
+	Tk::grid(Tk::rowconfigure, ".c", 5) -Tk::weight(1);
+
+	Tk::bind(".c.countries","<<ListboxSelect>>",show_population);
+
+	Tk::bind(".c.countries","<Double-1>",send_gift);
+	Tk::bind(".","<Return>",send_gift);
+
+	for(unsigned i=0; i<countries.size(); i+=2)
+	{
+		".c.countries" << Tk::itemconfigure(i) -Tk::background(Tk::rgb(0xf0,0xf0,0xff)); //-Tk::background("#f0f0ff") also works
+	}
+
+	".c.countries" << Tk::selection(Tk::set,0);
 
      	Tk::runEventLoop();
 }
