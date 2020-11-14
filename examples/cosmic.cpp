@@ -152,6 +152,30 @@ int main(int, char *argv[])
 	Tk::label(".f.msg") -Tk::font("SmallCaptionFont") -Tk::foreground("red") -Tk::textvariable(errmsg);
 	Tk::grid(Tk::configure, ".f.msg") -Tk::column(1) -Tk::row(2) -Tk::padx(5) -Tk::pady(5) -Tk::sticky("w");*/
 
+	//Grid spanning multiple cells
+	int one = 1;
+	int two = 0;
+	int three = 1;
+	Tk::frame(".c");
+	Tk::frame(".c.f") -Tk::borderwidth(5) -Tk::relief(Tk::ridge) -Tk::width(200) -Tk::height(100);
+	Tk::label(".c.namelbl") -Tk::text("Name");
+	Tk::entry(".c.name");
+	Tk::checkbutton(".c.one") -Tk::text("One") -Tk::variable(one) -Tk::onvalue(1);
+	Tk::checkbutton(".c.two") -Tk::text("Two") -Tk::variable(two) -Tk::onvalue(1);
+	Tk::checkbutton(".c.three") -Tk::text("Three") -Tk::variable(three) -Tk::onvalue(1);
+	Tk::button(".c.ok") -Tk::text("Okay");
+	Tk::button(".c.cancel") -Tk::text("Cancel");
+
+	Tk::grid(Tk::configure, ".c") -Tk::column(0) -Tk::row(0);
+	Tk::grid(Tk::configure, ".c.f") -Tk::column(0) -Tk::row(0) -Tk::columnspan(3) -Tk::rowspan(2);
+	Tk::grid(Tk::configure, ".c.namelbl") -Tk::column(3) -Tk::row(0) -Tk::columnspan(2);
+	Tk::grid(Tk::configure, ".c.name") -Tk::column(3) -Tk::row(1) -Tk::columnspan(2);
+	Tk::grid(Tk::configure, ".c.one") -Tk::column(0) -Tk::row(3);
+	Tk::grid(Tk::configure, ".c.two") -Tk::column(1) -Tk::row(3);
+	Tk::grid(Tk::configure, ".c.three") -Tk::column(2) -Tk::row(3);
+	Tk::grid(Tk::configure, ".c.ok") -Tk::column(3) -Tk::row(3);
+	Tk::grid(Tk::configure, ".c.cancel") -Tk::column(4) -Tk::row(3);
+
      	Tk::runEventLoop();
 }
 
